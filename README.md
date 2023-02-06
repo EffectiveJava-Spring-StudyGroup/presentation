@@ -8,16 +8,15 @@
   - 샘플코드 [jbloch/effective-java-3e-source-code (github.com)](https://github.com/jbloch/effective-java-3e-source-code)
   - 스터디자료 [Meet-Coder-Study/book-effective-java (github.com)](https://github.com/Meet-Coder-Study/book-effective-java)
   
-
+  
   
 
 ## :pencil: 발표자료 목록
 
 ### 1월 29일 - 1회차
-- [1회차스터디소개@박태영](./1월29일-1회차/1회차-스터디소개-@박태영.md)
-  
+- [스터디소개, 람다랑 스트림 @박태영](./1월29일-1회차/1회차-스터디소개-@박태영.md)
 ### 2월 12일 - 2회차
-- [아이템12. toString을 항상 재정의하라, 그리고 로깅이야기 @박태영](./2월12일-2회차/아이템12. toString을 항상 재정의하라, 그리고 로깅이야기.md)
+- [아이템12. toString을 항상 재정의하라, 그리고 로깅이야기 @박태영](./2월12일-2회차/아이템12.-toString을-항상-재정의하라,-그리고-로깅이야기.md)
 - 2회차 발표제목 @누구누구
 - 2회차 발표제목 @누구누구
 - 2회차 발표제목 @누구누구
