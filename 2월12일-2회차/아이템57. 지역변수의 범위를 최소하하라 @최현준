@@ -1,0 +1,129 @@
+## 아이템57 : 지역변수의 범위를 최소화하라
+ 지역변수의 유효 범위를 최소로 줄였을 때, 장점
+코드 가독성이 높아진다.
+유지보수성이 높아진다.
+오류 가능성은 낮아진다.
+ 지역변수의 유효 범위는 어떻게 줄일까?
+ 가장 처음 쓰일 때 선언하기
+사용하기도 전에 미리 선언하면 코드가 어수선하고 가독성이 떨어진다.
+실제로 사용하는 시점에 타입과 초깃값이 생각나지 않을 수 있다.
+변수를 사용할 때 의도한 범위 앞/뒤에서 사용할 때는 주의하자.
+지역 범수의 범위는 선언된 지점부터 블록이 끝난 뒤까지 살아 있다.
+ 선언과 동시에 초기화하기
+대부분 지역변수는 선언과 동시에 초기화 되어야 한다.
+초기화에 필요한 정보가 충분하지 않다면?
+충분해질 때까지 선언을 미뤄야 한다.
+단, try-catch문은 예외이다. Checked Exception 던질 가능성이 있다면 try 블록안에서 초기화해야 한다.
+(예외가 블록을 넘어 메서드까지 전파되기 때문)
+변수 값을 try 블록 밖에도 사용한다면 try 블록 앞에서 선언하자.
+public static void main(String[] args) {
+		// 클래스 이름을 Class 객체로 변환
+		Class<? extends Set<String>> cl = null;
+		try {
+				cl = (Class<? extends Set<String>>) Class.forName(args[0]);
+		} catch (ClassNotFoundException e) {
+				fatalError("클래스를 찾을 수 없습니다.");
+		}
+
+		//생성자 얻기
+		Constructor<? extends Set<String>> cons = null;
+		try {
+				//위 try 블록 앞에 선언된 지역변수 사용
+				cons = cl.getDeclaredConstructor();
+		} catch (NoSuchMethodException e) {
+				fatalError("매개변수 없는 생성자를 찾을 수 없습니다.");
+		}
+Java
+ while문보다 for 문 사용하기
+반복문은 변수 범위를 최소화해준다.
+반복 변수의 범위가 반복문의 몸체, for 키워드와 몸체 사이의 괄호 안으로 제한된다.
+for (Element e : c) {
+		...
+}
+Java
+반복자를 사용해야 한다면 for-each 문 대신 for 문을 사용하자.
+for (Iterator<Element> i = c.iterator(); i.hasNext(); ) {
+		Element e = i.next();
+		...
+}
+Java
+while 문의 문제점
+아래 코드를 보면 두 번째 while문에 위에서 선언된 i.hasNext()를 호출하고 있다.
+그리고 컴파일도 잘 되고 실행 시 어떠한 예외도 던지지 않는다.
+이러한 코드는  오랜 기간 버그를 발견하지 못할 수도 있다.
+Iterator<Element> i = c.iterator();
+while (i.hasNext()) {
+		doSomething(i.next());
+}
+
+...
+
+Iterator<Element> i2 = c2.iterator();
+while(i.hasNext()) { //i2를 사용해야 하는데 위에서 선언된 i를 사용하고 있다
+		doSomethingElse(i2.next());
+}
+Java
+전통적인 for 문을 사용하면 변수 유효 범위가 최소화 시킬 수 있기 때문에 위와 같은 문제를 해결할 수 있다.
+for (Iterator<Element> i = c.iterator(); i.hasNext(); ) {
+		Element e = i.next();
+		...
+}
+
+...
+//i.hasNext()를 호출하면 컴파일 에러가 발생한다.
+for (Iterator<Element> i2 = c2.iterator(); i.hasNext(); ) {
+		Element e2 = i2.next();
+		...
+}
+Java
+ 메서드를 작게 유지하자
+메서드를 작게 유지하고 한 가지 기능에 집중해야 한다.
+최대한 메서드를 기능별로 쪼개면 된다.
+@Test
+void test() {
+    List<Element> elements1 = 
+				Arrays.asList(new Element(1), new Element(2), new Element(3));
+    List<Element> elements2 =
+				Arrays.asList(new Element(4), new Element(5), new Element(6));
+
+    Iterator<Element> i = elements1.iterator();
+    while (i.hasNext()) {
+        i.next().print();
+    }
+
+    Iterator<Element> i2 = elements2.iterator();
+    while (i.hasNext()) {
+        i2.next().print();
+    }
+}
+
+class Element {
+    private final int number;
+
+    public Element(int number) {
+        this.number = number;
+    }
+
+    public void print() {
+        System.out.println(this.number);
+    }
+}
+Java
+@Test
+void test() {
+    List<Element> elements1 = ...
+    List<Element> elements2 = ...
+
+    print(elements1); //메서드 나누기
+    print(elements2);
+}
+
+private void print(List<Element> elements) {
+    for (Element element : elements) { //for문으로 변경
+        element.print();
+    }
+}
+
+class Element {
+    ...
+}
